@@ -1,0 +1,35 @@
+name: Build APK
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - project.zip
+      - .github/workflows/build.yml
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: System packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake build-essential ccache cmake gettext git libffi-dev libltdl-dev libncurses5-dev libncursesw5-dev libssl-dev libtool patch pkg-config unzip zip zlib1g-dev
+      - name: Unpack project
+        run: unzip -o project.zip -d app
+      - name: Install buildozer
+        run: pip install --upgrade buildozer "Cython<0.30" virtualenv appdirs packaging colorama jinja2 toml build setuptools
+      - name: Build APK
+        working-directory: app
+        run: buildozer -v android debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ButtonAndGun-apk
+          path: app/bin/*.apk
