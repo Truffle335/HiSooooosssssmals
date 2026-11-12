@@ -23,8 +23,8 @@ jobs:
       - name: Build exe
         working-directory: game
         run: >
-          pyinstaller --noconfirm --onefile --windowed --name ButtonAndGun
-          --add-data "music.mp3;." --add-data "shot.mp3;." --add-data "click.mp3;."
+          pyinstaller --noconfirm --onefile --windowed --name ButtonAndGun --icon icon.ico
+          --add-data "music.mp3;." --add-data "shot.mp3;." --add-data "click.mp3;." --add-data "icon.ico;."
           antiend.py
 
       - uses: actions/upload-artifact@v4
